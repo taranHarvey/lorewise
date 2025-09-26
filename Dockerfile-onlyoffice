@@ -1,0 +1,18 @@
+# Simplified OnlyOffice Document Server for Railway
+FROM onlyoffice/documentserver:latest
+
+# OnlyOffice Configuration
+ENV JWT_ENABLED=true
+ENV DOCSERV_PORT=8080
+ENV REDIS_SERVER_HOST=localhost
+ENV REDIS_SERVER_PORT=6379
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=120s --retries=3 \
+  CMD curl -f http://localhost:8080/healthcheck || exit 1
+
+# Expose OnlyOffice port
+EXPOSE 8080
+
+# Start OnlyOffice Document Server
+CMD ["bash", "-c", "/var/www/onlyoffice/documentserver/documentserver-jenkins.sh"]
