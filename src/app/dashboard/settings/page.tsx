@@ -7,6 +7,9 @@ import ThemeToggle from '@/components/theme/ThemeToggle';
 import { ArrowLeftIcon, UserIcon, CogIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 
+// Disable static generation for this page since it uses client-side context
+export const dynamic = 'force-dynamic';
+
 export default function SettingsPage() {
   const { user } = useAuth();
   const { theme } = useTheme();

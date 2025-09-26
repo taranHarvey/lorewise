@@ -1,5 +1,8 @@
 'use client';
 
+// Disable static generation since it uses client-side context
+export const dynamic = 'force-dynamic';
+
 import React, { useEffect, useState } from 'react';
 import OnlyOfficeNovelEditor from '@/components/writing/OnlyOfficeNovelEditor';
 import { useAuth } from '@/components/auth/AuthProvider';

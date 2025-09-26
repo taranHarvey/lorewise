@@ -1,5 +1,8 @@
 'use client';
 
+// Disable static generation since it uses client-side context
+export const dynamic = 'force-dynamic';
+
 import { useState } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { createNovel } from '@/lib/database';

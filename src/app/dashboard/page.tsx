@@ -1,5 +1,8 @@
 'use client';
 
+// Disable static generation for this page since it uses client-side context
+export const dynamic = 'force-dynamic';
+
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
