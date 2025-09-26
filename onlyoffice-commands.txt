@@ -1,0 +1,6 @@
+# OnlyOffice Docker configuration for Railway
+FROM onlyoffice/documentserver:latest
+ENV JWT_ENABLED=true
+ENV DOCSERV_PORT=8080
+EXPOSE 8080
+CMD ["bash", "-c", "/var/www/onlyoffice/documentserver/documentserver-jenkins.sh"]
