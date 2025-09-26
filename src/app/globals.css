@@ -1,0 +1,784 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Theme Variables */
+:root {
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-accent: #8b5cf6;
+}
+
+.light {
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f8fafc;
+  --color-text-primary: #1e293b;
+  --color-text-secondary: #64748b;
+  --color-accent: #7c3aed;
+}
+
+.dark {
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-text-primary: #f8fafc;
+  --color-text-secondary: #cbd5e1;
+  --color-accent: #8b5cf6;
+}
+
+/* Rich Text Editor Styles */
+.ProseMirror {
+  outline: none;
+  min-height: 100%;
+  padding: 2rem;
+  color: white;
+  line-height: 1.6;
+}
+
+.ProseMirror h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin: 2rem 0 1rem 0;
+  color: #e2e8f0;
+  border-bottom: 2px solid #4f46e5;
+  padding-bottom: 0.5rem;
+}
+
+.ProseMirror h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 1.5rem 0 1rem 0;
+  color: #e2e8f0;
+  border-bottom: 1px solid #64748b;
+  padding-bottom: 0.25rem;
+}
+
+.ProseMirror h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 1.25rem 0 0.75rem 0;
+  color: #e2e8f0;
+}
+
+.ProseMirror h4 {
+  font-size: 1.25rem;
+  font-weight: bold;
+  margin: 1rem 0 0.5rem 0;
+  color: #e2e8f0;
+}
+
+.ProseMirror h5 {
+  font-size: 1.125rem;
+  font-weight: bold;
+  margin: 0.75rem 0 0.5rem 0;
+  color: #e2e8f0;
+}
+
+.ProseMirror h6 {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0.5rem 0 0.25rem 0;
+  color: #e2e8f0;
+}
+
+.ProseMirror p {
+  margin: 0.75rem 0;
+  color: #cbd5e1;
+}
+
+.ProseMirror strong {
+  font-weight: bold;
+  color: #f1f5f9;
+}
+
+.ProseMirror em {
+  font-style: italic;
+}
+
+.ProseMirror u {
+  text-decoration: underline;
+}
+
+.ProseMirror s {
+  text-decoration: line-through;
+}
+
+.ProseMirror code {
+  background-color: #374151;
+  color: #fbbf24;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+}
+
+.ProseMirror pre {
+  background-color: #1f2937;
+  color: #e5e7eb;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+  border: 1px solid #374151;
+}
+
+.ProseMirror pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+}
+
+.ProseMirror blockquote {
+  border-left: 4px solid #4f46e5;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.ProseMirror ul {
+  list-style-type: disc;
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.ProseMirror ol {
+  list-style-type: decimal;
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.ProseMirror li {
+  margin: 0.25rem 0;
+  color: #cbd5e1;
+}
+
+.ProseMirror a {
+  color: #60a5fa;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.ProseMirror a:hover {
+  color: #93c5fd;
+}
+
+.ProseMirror img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5rem;
+  margin: 1rem 0;
+}
+
+.ProseMirror hr {
+  border: none;
+  border-top: 2px solid #4b5563;
+  margin: 2rem 0;
+}
+
+.ProseMirror table {
+  border-collapse: collapse;
+  margin: 1rem 0;
+  width: 100%;
+  border: 1px solid #4b5563;
+}
+
+.ProseMirror th,
+.ProseMirror td {
+  border: 1px solid #4b5563;
+  padding: 0.5rem;
+  text-align: left;
+  color: #cbd5e1;
+}
+
+.ProseMirror th {
+  background-color: #374151;
+  font-weight: bold;
+  color: #f1f5f9;
+}
+
+.ProseMirror mark {
+  background-color: #fbbf24;
+  color: #1f2937;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.ProseMirror sub {
+  font-size: 0.75em;
+  vertical-align: sub;
+}
+
+.ProseMirror sup {
+  font-size: 0.75em;
+  vertical-align: super;
+}
+
+/* Focus styles */
+.ProseMirror:focus {
+  outline: none;
+}
+
+/* Selection styles */
+.ProseMirror ::selection {
+  background-color: #4f46e5;
+  color: white;
+}
+
+/* Placeholder styles */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #6b7280;
+  pointer-events: none;
+  height: 0;
+}
+
+/* Table resizing */
+.ProseMirror table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+.ProseMirror table .tableWrapper {
+  padding: 1rem 0;
+  overflow-x: auto;
+}
+
+.ProseMirror .resize-cursor {
+  cursor: ew-resize;
+  cursor: col-resize;
+}
+
+/* Custom scrollbar for editor */
+.ProseMirror::-webkit-scrollbar {
+  width: 8px;
+}
+
+.ProseMirror::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+.ProseMirror::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+
+.ProseMirror::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+/* Google Docs-style page breaks */
+.page-break-divider {
+  display: block;
+  margin: 2rem 0;
+  height: 2rem;
+  background: #f8f9fa;
+  border: 1px dashed #dadce0;
+  position: relative;
+}
+
+.page-break-divider::before {
+  content: 'Page Break';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #5f6368;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: #f8f9fa;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+}
+
+/* Page break node styling for Google Docs appearance */
+.page-break-node {
+  margin: 2rem 0;
+  padding: 1rem 0;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: #f8f9fa;
+  border: 1px dashed #dadce0;
+  border-radius: 4px;
+}
+
+.page-break-node:hover {
+  background-color: #e8f0fe;
+  border-color: #1a73e8;
+}
+
+.page-break-node.selected {
+  background-color: #e8f0fe;
+  border: 2px solid #1a73e8;
+  border-radius: 4px;
+}
+
+.page-break-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  position: relative;
+}
+
+.page-break-line {
+  flex: 1;
+  height: 1px;
+  background: #dadce0;
+  max-width: 100px;
+}
+
+.page-break-text {
+  color: #5f6368;
+  font-size: 0.875rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  background: #ffffff;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  white-space: nowrap;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Invisible page break markers */
+.page-break-marker {
+  display: none !important;
+}
+
+/* Page editor specific prose styling */
+.page-editor .prose {
+  color: #1f2937;
+  line-height: 1.75;
+  font-size: 12pt;
+  font-family: 'Times New Roman', serif;
+}
+
+.page-editor .prose h1 {
+  font-size: 18pt;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #1f2937;
+}
+
+.page-editor .prose h2 {
+  font-size: 16pt;
+  font-weight: bold;
+  margin-top: 1.5rem;
+  margin-bottom: 0.75rem;
+  color: #1f2937;
+}
+
+.page-editor .prose h3 {
+  font-size: 14pt;
+  font-weight: bold;
+  margin-top: 1.25rem;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.page-editor .prose p {
+  margin-bottom: 1rem;
+  text-align: justify;
+  color: #1f2937;
+}
+
+.page-editor .prose ul, 
+.page-editor .prose ol {
+  margin-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.page-editor .prose li {
+  margin-bottom: 0.25rem;
+  color: #1f2937;
+}
+
+.page-editor .prose blockquote {
+  border-left: 4px solid #e5e7eb;
+  padding-left: 1rem;
+  margin: 1rem 0;
+  font-style: italic;
+  color: #374151;
+}
+
+.page-editor .prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.page-editor .prose th, 
+.page-editor .prose td {
+  border: 1px solid #d1d5db;
+  padding: 0.5rem;
+  text-align: left;
+  color: #1f2937;
+}
+
+.page-editor .prose th {
+  background-color: #f9fafb;
+  font-weight: bold;
+}
+
+/* Separate pages layout - 6x9 inch pages */
+.novel-page-separate {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  border: 1px solid #dadce0;
+  position: relative;
+  margin: 0 auto 2rem auto;
+  background: #ffffff;
+  width: 576px; /* 6 inches */
+  height: 864px; /* 9 inches */
+  overflow: hidden;
+  page-break-after: always;
+}
+
+/* Page break marker - invisible */
+.page-break-marker {
+  display: none !important;
+}
+
+/* Google Docs-style continuous page flow */
+.page-break {
+  margin-bottom: 2rem;
+  break-after: page;
+  height: 2rem;
+  background: #f8f9fa;
+  border: 1px dashed #dadce0;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-break::before {
+  content: 'Page Break';
+  color: #5f6368;
+  font-size: 0.875rem;
+  font-weight: 500;
+  background: #f8f9fa;
+  padding: 0.25rem 0.75rem;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+}
+
+.novel-prose {
+  font-family: 'Times New Roman', serif !important;
+  font-size: 12pt !important;
+  line-height: 1.75 !important;
+  color: #1f2937 !important;
+  text-align: justify !important;
+  cursor: text !important;
+}
+
+.novel-prose * {
+  cursor: text !important;
+}
+
+.novel-prose p {
+  margin-bottom: 1rem;
+  text-indent: 0.5in; /* Indent first line of paragraphs */
+}
+
+.novel-prose p:first-child {
+  text-indent: 0; /* Don't indent the very first paragraph */
+}
+
+.novel-prose h1,
+.novel-prose h2,
+.novel-prose h3,
+.novel-prose h4,
+.novel-prose h5,
+.novel-prose h6 {
+  text-indent: 0 !important;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.novel-prose h1 {
+  font-size: 18pt;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 3rem;
+  margin-bottom: 2rem;
+}
+
+.novel-prose h2 {
+  font-size: 16pt;
+  font-weight: bold;
+  text-align: center;
+  margin-top: 2.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.novel-prose h3 {
+  font-size: 14pt;
+  font-weight: bold;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+/* Page shadow and border for realistic book appearance */
+.page-container {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border: 1px solid #e5e7eb;
+  position: relative;
+  margin: 0 auto;
+}
+
+/* Google Docs-style continuous page flow */
+.page-break {
+  margin-bottom: 2rem;
+  break-after: page;
+}
+
+.page-break-marker {
+  display: none !important;
+}
+
+/* Google Docs-style document with visual page breaks */
+.document-container {
+  position: relative;
+  background: white;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+
+.document-editor {
+  position: relative;
+}
+
+/* Hide page break text but create visual separation */
+.document-editor p {
+  /* This will be handled by JavaScript to hide page break text */
+}
+
+/* Create visual page breaks using CSS */
+.document-editor::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent calc(11in - 3rem),
+    rgba(0, 0, 0, 0.05) calc(11in - 3rem),
+    rgba(0, 0, 0, 0.05) 11in
+  );
+  background-size: 100% 11in;
+  z-index: 1;
+}
+
+/* Ensure text is above the page break lines */
+.document-editor .ProseMirror {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+}
+
+/* Page Break Component Styles */
+.page-break-node {
+  margin: 2rem 0;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.page-break-node:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.page-break-node.selected {
+  background-color: rgba(59, 130, 246, 0.1);
+  border: 2px solid #3b82f6;
+}
+
+.page-break-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  user-select: none;
+}
+
+.page-break-line {
+  flex: 1;
+  height: 1px;
+  background-color: #d1d5db;
+  margin: 0 1rem;
+}
+
+.page-break-text {
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* Page break visual separator */
+.page-break-visual {
+  height: 2rem;
+  border-bottom: 1px dashed #d1d5db;
+  margin: 1rem 0;
+  position: relative;
+}
+
+.page-break-visual::after {
+  content: 'Page Break';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: white;
+  padding: 0 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Fixed page dimensions */
+.document-page {
+  break-after: page;
+  position: relative;
+}
+
+/* Enhanced page styling */
+.page-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.02) 50%, transparent 100%);
+  pointer-events: none;
+}
+
+/* Tab styling for the enhanced editor */
+.tab-content {
+  min-height: 200px;
+}
+
+/* Scroll-based page navigation styling */
+.page-scroll-container {
+  scroll-behavior: smooth;
+}
+
+.page-scroll-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.page-scroll-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.page-scroll-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.page-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Header and footer styling */
+.page-header, .page-footer {
+  font-family: 'Times New Roman', serif;
+  color: #374151;
+}
+
+/* Enhanced margin and border controls */
+.margin-control {
+  transition: all 0.2s ease;
+}
+
+.margin-control:focus {
+  border-color: #8b5cf6;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Zoom controls */
+.zoom-indicator {
+  transition: all 0.2s ease;
+}
+
+/* Professional book-like styling */
+.page-editor .prose {
+  font-family: 'Times New Roman', serif;
+  line-height: 1.6;
+  color: #1f2937;
+}
+
+.page-editor .prose h1 {
+  page-break-before: always;
+  break-before: page;
+}
+
+.page-editor .prose h1:first-child {
+  page-break-before: avoid;
+  break-before: avoid;
+}
+
+/* Ensure editor text is always black */
+.ProseMirror {
+  color: #000000 !important;
+}
+
+.ProseMirror p {
+  color: #000000 !important;
+}
+
+.ProseMirror h1,
+.ProseMirror h2,
+.ProseMirror h3,
+.ProseMirror h4,
+.ProseMirror h5,
+.ProseMirror h6 {
+  color: #000000 !important;
+}
+
+/* Page break styling - creates visual page separation */
+.page-break-divider {
+  height: 80px;
+  margin: 40px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: linear-gradient(to bottom, transparent 0%, #f8f9fa 20%, #f8f9fa 80%, transparent 100%);
+}
+
+.page-break-divider::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #d1d5db, transparent);
+  transform: translateY(-50%);
+}
+
+.page-break-divider::after {
+  content: "Page Break";
+  background: white;
+  padding: 8px 16px;
+  font-size: 12px;
+  color: #6b7280;
+  font-family: system-ui, sans-serif;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
