@@ -1,14 +1,15 @@
 'use client';
 
+// Force dynamic rendering - disable SSG for this page
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 import React from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useTheme } from '@/components/theme/ThemeProvider';
 import ThemeToggle from '@/components/theme/ThemeToggle';
 import { ArrowLeftIcon, UserIcon, CogIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-
-// Disable static generation for this page since it uses client-side context
-export const dynamic = 'force-dynamic';
 
 export default function SettingsPage() {
   const { user } = useAuth();

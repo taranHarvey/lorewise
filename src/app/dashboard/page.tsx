@@ -2,6 +2,7 @@
 
 // Disable static generation for this page since it uses client-side context
 export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
 
 import { useAuth } from '@/components/auth/AuthProvider';
 import { useRouter } from 'next/navigation';

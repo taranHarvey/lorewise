@@ -17,6 +17,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // Check if we're on the client side to avoid SSG issues
+    if (typeof window === 'undefined') return;
+    
     // Get theme from localStorage or default to dark
     const savedTheme = localStorage.getItem('lorewise-theme') as Theme;
     if (savedTheme) {
@@ -30,7 +33,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (mounted) {
+    if (mounted && typeof window !== 'undefined') {
       // Apply theme to document
       document.documentElement.classList.remove('light', 'dark');
       document.documentElement.classList.add(theme);
@@ -62,6 +65,10 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 export function useTheme() {
   const context = useContext(ThemeContext);
   if (context === undefined) {
+    // Use a fallback during build time to avoid SSG issues
+    if (typeof window === 'undefined') {
+      return { theme: 'dark' as const, toggleTheme: () => {}, setTheme: () => {} };
+    }
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
