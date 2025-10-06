@@ -8,6 +8,7 @@ import SimpleDocumentEditor from './SeparatePagesEditor';
 import OnlyOfficeNovelEditor from './OnlyOfficeNovelEditor';
 import MultiDocumentTabs from './MultiDocumentTabs';
 import OnlyOfficeEditor, { OnlyOfficeEditorRef } from './OnlyOfficeEditor';
+import GoogleDocsEditor from './GoogleDocsEditor';
 
 interface MainEditorProps {
   selectedNovelId: string | null;
@@ -35,7 +36,7 @@ const MainEditor = forwardRef<MainEditorRef, MainEditorProps>(({
   const [saving, setSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isLoadingNovel, setIsLoadingNovel] = useState(false);
-  const [useOnlyOffice, setUseOnlyOffice] = useState(true); // Default to OnlyOffice
+  const [editorType, setEditorType] = useState<'google-docs' | 'onlyoffice' | 'simple'>('google-docs'); // Default to Google Docs
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Tab system state
@@ -339,32 +340,78 @@ const MainEditor = forwardRef<MainEditorRef, MainEditorProps>(({
   const renderDocumentEditor = (doc: any) => {
     if (!doc) return null;
     
-    return (
-      <OnlyOfficeEditor
-        key={doc.id}
-        ref={(instance) => {
-          if (instance) {
-            onlyOfficeRefs.current.set(doc.id, instance);
-          }
-        }}
-        documentId={doc.id}
-        documentTitle={doc.title}
-        onSave={(content) => {
-          setOpenDocuments(prev =>
-            prev.map(x => 
-              x.id === doc.id 
-                ? { ...x, isDirty: content !== undefined }
-                : x
-            )
-          );
-        }}
-        onError={(error) => {
-          console.error('OnlyOffice tab error:', error);
-        }}
-        height="100%"
-        width="100%"
-      />
-    );
+    switch (editorType) {
+      case 'google-docs':
+        return (
+          <GoogleDocsEditor
+            key={doc.id}
+            documentId={doc.id}
+            documentTitle={doc.title}
+            initialContent={doc.content || ''}
+            onSave={(content) => {
+              setOpenDocuments(prev =>
+                prev.map(x => 
+                  x.id === doc.id 
+                    ? { ...x, isDirty: content !== undefined }
+                    : x
+                )
+              );
+            }}
+            onError={(error) => {
+              console.error('Google Docs error:', error);
+            }}
+          />
+        );
+      
+      case 'onlyoffice':
+        return (
+          <OnlyOfficeEditor
+            key={doc.id}
+            ref={(instance) => {
+              if (instance) {
+                onlyOfficeRefs.current.set(doc.id, instance);
+              }
+            }}
+            documentId={doc.id}
+            documentTitle={doc.title}
+            onSave={(content) => {
+              setOpenDocuments(prev =>
+                prev.map(x => 
+                  x.id === doc.id 
+                    ? { ...x, isDirty: content !== undefined }
+                    : x
+                )
+              );
+            }}
+            onError={(error) => {
+              console.error('OnlyOffice tab error:', error);
+            }}
+            height="100%"
+            width="100%"
+          />
+        );
+      
+      case 'simple':
+        return (
+          <SimpleDocumentEditor
+            key={doc.id}
+            novelId={doc.id}
+            initialContent={doc.content || ''}
+            onContentChange={(content) => {
+              setOpenDocuments(prev =>
+                prev.map(x => 
+                  x.id === doc.id 
+                    ? { ...x, isDirty: content !== undefined }
+                    : x
+                )
+              );
+            }}
+          />
+        );
+      
+      default:
+        return null;
+    }
   };
 
   return (
