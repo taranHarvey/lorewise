@@ -151,9 +151,13 @@ const OnlyOfficeEditor = React.forwardRef<OnlyOfficeEditorRef, OnlyOfficeEditorP
           let onlyOfficeDocumentUrl = browserDocumentUrl;
           let onlyOfficeCallbackUrl = `${baseUrl}/api/onlyoffice/callback`; 
           // Check if we're running against a hosted OnlyOffice server
-          const onlyofficeServerUrl = process.env.NEXT_PUBLIC_ONLYOFFICE_SERVER_URL || 'http://localhost:8080';
+          const onlyofficeServerUrl = process.env.NEXT_PUBLIC_ONLYOFFICE_SERVER_URL;
           
-          if (onlyofficeServerUrl !== 'http://localhost:8080') {
+          if (!onlyofficeServerUrl) {
+            throw new Error('NEXT_PUBLIC_ONLYOFFICE_SERVER_URL environment variable is not set. Please configure OnlyOffice server URL.');
+          }
+          
+          if (onlyofficeServerUrl && onlyofficeServerUrl !== 'http://localhost:8080') {
             // Using hosted OnlyOffice server - no Docker networking needed!
             onlyOfficeDocumentUrl = browserDocumentUrl; // Use public URL straight  
             onlyOfficeCallbackUrl = `${baseUrl}/api/onlyoffice/callback`; // Use your published domain
