@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useRef } from 'react';
-import { createGoogleDoc, updateGoogleDoc, getGoogleDocContent } from '@/lib/google-docs';
+// Google Docs API calls will be made through API routes
 import { updateNovel } from '@/lib/database';
 
 interface GoogleDocsEditorProps {
@@ -33,8 +33,24 @@ export default function GoogleDocsEditor({
         setIsLoading(true);
         setError(null);
 
-        // Create new Google Doc
-        const result = await createGoogleDoc(documentTitle, initialContent);
+        // Create new Google Doc via API route
+        const response = await fetch('/api/google-docs', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            action: 'create',
+            title: documentTitle,
+            content: initialContent,
+          }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to create Google Doc');
+        }
+
+        const result = await response.json();
         setGoogleDocId(result.documentId);
         setContent(initialContent);
         
@@ -69,8 +85,22 @@ export default function GoogleDocsEditor({
     try {
       setIsSaving(true);
       
-      // Update Google Doc
-      await updateGoogleDoc(googleDocId, content);
+      // Update Google Doc via API route
+      const response = await fetch('/api/google-docs', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          action: 'update',
+          documentId: googleDocId,
+          content: content,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update Google Doc');
+      }
       
       // Update Firestore
       await updateNovel(documentId, {

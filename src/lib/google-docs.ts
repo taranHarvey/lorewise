@@ -1,12 +1,17 @@
 import { google } from 'googleapis';
 
+// Ensure this runs only on server side
+if (typeof window !== 'undefined') {
+  throw new Error('Google Docs API can only be used on the server side');
+}
+
 // Google Docs API configuration
 const SCOPES = ['https://www.googleapis.com/auth/documents'];
 
 // Initialize Google Docs API client
 export function getGoogleDocsClient() {
   const auth = new google.auth.GoogleAuth({
-    keyFile: process.env.GOOGLE_SERVICE_ACCOUNT_KEY,
+    credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}'),
     scopes: SCOPES,
   });
 
