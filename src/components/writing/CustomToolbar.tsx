@@ -6,10 +6,10 @@ import {
   ItalicIcon,
   UnderlineIcon,
   ListBulletIcon,
-  AlignLeftIcon,
-  AlignCenterIcon,
-  AlignRightIcon,
-  AlignJustifyIcon,
+  ArrowLeftIcon,
+  ArrowRightIcon,
+  Bars3CenterLeftIcon,
+  Bars3BottomLeftIcon,
   LinkIcon,
   PhotoIcon,
   TableCellsIcon,
@@ -40,10 +40,10 @@ export default function CustomToolbar({ onFormatChange, onInsert, className = ''
   ];
 
   const alignmentOptions = [
-    { name: 'alignLeft', icon: AlignLeftIcon, action: () => onFormatChange('align', 'left') },
-    { name: 'alignCenter', icon: AlignCenterIcon, action: () => onFormatChange('align', 'center') },
-    { name: 'alignRight', icon: AlignRightIcon, action: () => onFormatChange('align', 'right') },
-    { name: 'alignJustify', icon: AlignJustifyIcon, action: () => onFormatChange('align', 'justify') },
+    { name: 'alignLeft', icon: ArrowLeftIcon, action: () => onFormatChange('align', 'left') },
+    { name: 'alignCenter', icon: Bars3CenterLeftIcon, action: () => onFormatChange('align', 'center') },
+    { name: 'alignRight', icon: ArrowRightIcon, action: () => onFormatChange('align', 'right') },
+    { name: 'alignJustify', icon: Bars3BottomLeftIcon, action: () => onFormatChange('align', 'justify') },
   ];
 
   const listOptions = [
