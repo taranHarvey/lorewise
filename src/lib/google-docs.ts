@@ -5,23 +5,29 @@ if (typeof window !== 'undefined') {
   throw new Error('Google Docs API can only be used on the server side');
 }
 
-// Google Docs API configuration
-const SCOPES = ['https://www.googleapis.com/auth/documents'];
+// Google Docs API configuration - using OAuth2 for individual user accounts
+const SCOPES = [
+  'https://www.googleapis.com/auth/documents',
+  'https://www.googleapis.com/auth/drive.file'
+];
 
-// Initialize Google Docs API client
-export function getGoogleDocsClient() {
-  const auth = new google.auth.GoogleAuth({
-    credentials: JSON.parse(process.env.GOOGLE_SERVICE_ACCOUNT_KEY || '{}'),
-    scopes: SCOPES,
-  });
+// Initialize Google Docs API client with OAuth2
+export function getGoogleDocsClient(accessToken: string) {
+  const auth = new google.auth.OAuth2(
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
+  );
+
+  auth.setCredentials({ access_token: accessToken });
 
   return google.docs({ version: 'v1', auth });
 }
 
 // Create a new Google Doc
-export async function createGoogleDoc(title: string, content: string) {
+export async function createGoogleDoc(title: string, content: string, accessToken: string) {
   try {
-    const docs = getGoogleDocsClient();
+    const docs = getGoogleDocsClient(accessToken);
     
     // Create new document
     const response = await docs.documents.create({
@@ -62,9 +68,9 @@ export async function createGoogleDoc(title: string, content: string) {
 }
 
 // Update Google Doc content
-export async function updateGoogleDoc(documentId: string, content: string) {
+export async function updateGoogleDoc(documentId: string, content: string, accessToken: string) {
   try {
-    const docs = getGoogleDocsClient();
+    const docs = getGoogleDocsClient(accessToken);
     
     // Get current document to clear existing content
     const document = await docs.documents.get({ documentId });
@@ -104,9 +110,9 @@ export async function updateGoogleDoc(documentId: string, content: string) {
 }
 
 // Get Google Doc content
-export async function getGoogleDocContent(documentId: string) {
+export async function getGoogleDocContent(documentId: string, accessToken: string) {
   try {
-    const docs = getGoogleDocsClient();
+    const docs = getGoogleDocsClient(accessToken);
     
     const response = await docs.documents.get({ documentId });
     

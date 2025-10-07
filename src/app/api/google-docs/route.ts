@@ -3,28 +3,32 @@ import { createGoogleDoc, updateGoogleDoc, getGoogleDocContent } from '@/lib/goo
 
 export async function POST(request: NextRequest) {
   try {
-    const { action, documentId, title, content } = await request.json();
+    const { action, documentId, title, content, accessToken } = await request.json();
+
+    if (!accessToken) {
+      return NextResponse.json({ error: 'Access token required - please connect your Google account' }, { status: 401 });
+    }
 
     switch (action) {
       case 'create':
         if (!title) {
           return NextResponse.json({ error: 'Title is required' }, { status: 400 });
         }
-        const result = await createGoogleDoc(title, content || '');
+        const result = await createGoogleDoc(title, content || '', accessToken);
         return NextResponse.json(result);
 
       case 'update':
         if (!documentId || !content) {
           return NextResponse.json({ error: 'Document ID and content are required' }, { status: 400 });
         }
-        const updateResult = await updateGoogleDoc(documentId, content);
+        const updateResult = await updateGoogleDoc(documentId, content, accessToken);
         return NextResponse.json(updateResult);
 
       case 'get':
         if (!documentId) {
           return NextResponse.json({ error: 'Document ID is required' }, { status: 400 });
         }
-        const docContent = await getGoogleDocContent(documentId);
+        const docContent = await getGoogleDocContent(documentId, accessToken);
         return NextResponse.json({ content: docContent });
 
       default:
