@@ -10,6 +10,7 @@ import MultiDocumentTabs from './MultiDocumentTabs';
 import OnlyOfficeEditor, { OnlyOfficeEditorRef } from './OnlyOfficeEditor';
 import GoogleDocsEditor from './GoogleDocsEditor';
 import GoogleDocsEmbed from './GoogleDocsEmbed';
+import EnhancedGoogleDocsEditor from './EnhancedGoogleDocsEditor';
 
 interface MainEditorProps {
   selectedNovelId: string | null;
@@ -37,7 +38,7 @@ const MainEditor = forwardRef<MainEditorRef, MainEditorProps>(({
   const [saving, setSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isLoadingNovel, setIsLoadingNovel] = useState(false);
-  const [editorType, setEditorType] = useState<'google-docs-embed' | 'google-docs' | 'onlyoffice' | 'simple'>('google-docs-embed'); // Default to Google Docs Embed
+  const [editorType, setEditorType] = useState<'enhanced-google-docs' | 'google-docs-embed' | 'google-docs' | 'onlyoffice' | 'simple'>('enhanced-google-docs'); // Default to Enhanced Google Docs
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Tab system state
@@ -342,6 +343,28 @@ const MainEditor = forwardRef<MainEditorRef, MainEditorProps>(({
     if (!doc) return null;
     
     switch (editorType) {
+      case 'enhanced-google-docs':
+        return (
+          <EnhancedGoogleDocsEditor
+            key={doc.id}
+            documentId={doc.id}
+            documentTitle={doc.title}
+            initialContent={doc.content || ''}
+            onSave={(content) => {
+              setOpenDocuments(prev =>
+                prev.map(x => 
+                  x.id === doc.id 
+                    ? { ...x, isDirty: content !== undefined }
+                    : x
+                )
+              );
+            }}
+            onError={(error) => {
+              console.error('Enhanced Google Docs error:', error);
+            }}
+          />
+        );
+      
       case 'google-docs-embed':
         return (
           <GoogleDocsEmbed
