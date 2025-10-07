@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 // Google Docs API calls will be made through API routes
 import { updateNovel } from '@/lib/database';
-import GoogleAuth from '@/components/auth/GoogleAuth';
+import { useAuth } from '@/components/auth/AuthProvider';
 
 interface GoogleDocsEditorProps {
   documentId: string;
@@ -20,20 +20,18 @@ export default function GoogleDocsEditor({
   onSave,
   onError,
 }: GoogleDocsEditorProps) {
+  const { googleDocsToken } = useAuth();
   const [content, setContent] = useState(initialContent);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [googleDocId, setGoogleDocId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-  const [needsAuth, setNeedsAuth] = useState(false);
   const editorRef = useRef<HTMLTextAreaElement>(null);
 
   // Initialize Google Doc
   useEffect(() => {
     const initializeDocument = async () => {
-      if (!accessToken) {
-        setNeedsAuth(true);
+      if (!googleDocsToken) {
         setIsLoading(false);
         return;
       }
@@ -41,7 +39,6 @@ export default function GoogleDocsEditor({
       try {
         setIsLoading(true);
         setError(null);
-        setNeedsAuth(false);
 
         // Create new Google Doc via API route
         const response = await fetch('/api/google-docs', {
@@ -53,7 +50,7 @@ export default function GoogleDocsEditor({
             action: 'create',
             title: documentTitle,
             content: initialContent,
-            accessToken: accessToken,
+            accessToken: googleDocsToken,
           }),
         });
 
@@ -78,7 +75,7 @@ export default function GoogleDocsEditor({
     };
 
     initializeDocument();
-  }, [documentId, documentTitle, initialContent, onError, accessToken]);
+  }, [documentId, documentTitle, initialContent, onError, googleDocsToken]);
 
   // Auto-save functionality
   useEffect(() => {
@@ -92,7 +89,7 @@ export default function GoogleDocsEditor({
   }, [content, googleDocId]);
 
   const saveDocument = async () => {
-    if (!googleDocId || isSaving || !accessToken) return;
+    if (!googleDocId || isSaving || !googleDocsToken) return;
 
     try {
       setIsSaving(true);
@@ -107,7 +104,7 @@ export default function GoogleDocsEditor({
           action: 'update',
           documentId: googleDocId,
           content: content,
-          accessToken: accessToken,
+          accessToken: googleDocsToken,
         }),
       });
 
@@ -142,22 +139,13 @@ export default function GoogleDocsEditor({
     await saveDocument();
   };
 
-  if (needsAuth) {
+  if (!googleDocsToken) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="text-blue-500 text-xl mb-4">🔐</div>
-          <p className="text-gray-600 mb-4">Connect your Google account to use Google Docs</p>
-          <GoogleAuth
-            onAuthSuccess={(token) => {
-              setAccessToken(token);
-              setNeedsAuth(false);
-            }}
-            onAuthError={(error) => {
-              setError(error);
-              onError?.(error);
-            }}
-          />
+          <p className="text-gray-600 mb-4">Please log in with Google to use Google Docs</p>
+          <p className="text-sm text-gray-500">Google Docs integration requires Google authentication</p>
         </div>
       </div>
     );

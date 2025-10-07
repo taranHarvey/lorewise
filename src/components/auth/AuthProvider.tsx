@@ -16,6 +16,7 @@ import { auth } from '@/lib/firebase';
 interface AuthContextType {
   user: User | null;
   loading: boolean;
+  googleDocsToken: string | null;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
@@ -28,11 +29,23 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
+  const [googleDocsToken, setGoogleDocsToken] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setUser(user);
       setLoading(false);
+      
+      // Check if we have a stored Google Docs token
+      if (user) {
+        const storedToken = localStorage.getItem('googleDocsToken');
+        if (storedToken) {
+          setGoogleDocsToken(storedToken);
+        }
+      } else {
+        setGoogleDocsToken(null);
+        localStorage.removeItem('googleDocsToken');
+      }
     });
 
     return unsubscribe;
@@ -48,11 +61,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signInWithGoogle = async () => {
     const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    // Add Google Docs scopes to the provider
+    provider.addScope('https://www.googleapis.com/auth/documents');
+    provider.addScope('https://www.googleapis.com/auth/drive.file');
+    
+    const result = await signInWithPopup(auth, provider);
+    
+    // Get the Google access token for Docs API
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    if (credential?.accessToken) {
+      setGoogleDocsToken(credential.accessToken);
+      // Store in localStorage for persistence
+      localStorage.setItem('googleDocsToken', credential.accessToken);
+    }
   };
 
   const logout = async () => {
     await signOut(auth);
+    setGoogleDocsToken(null);
+    localStorage.removeItem('googleDocsToken');
   };
 
   const resetPassword = async (email: string) => {
@@ -62,6 +89,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = {
     user,
     loading,
+    googleDocsToken,
     signIn,
     signUp,
     signInWithGoogle,
