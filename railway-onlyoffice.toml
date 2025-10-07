@@ -1,0 +1,8 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "onlyoffice-railway.dockerfile"
+
+[deploy]
+healthcheckPath = "/healthcheck"
+healthcheckTimeout = 300
+restartPolicyType = "on_failure"

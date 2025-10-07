@@ -39,7 +39,7 @@ const MainEditor = forwardRef<MainEditorRef, MainEditorProps>(({
   const [saving, setSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isLoadingNovel, setIsLoadingNovel] = useState(false);
-  const [editorType, setEditorType] = useState<'full-google-docs' | 'enhanced-google-docs' | 'google-docs-embed' | 'google-docs' | 'onlyoffice' | 'simple'>('full-google-docs'); // Default to Full Google Docs
+  const [editorType, setEditorType] = useState<'onlyoffice' | 'full-google-docs' | 'enhanced-google-docs' | 'google-docs-embed' | 'google-docs' | 'simple'>('onlyoffice'); // Default to OnlyOffice
   const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Tab system state
@@ -344,6 +344,34 @@ const MainEditor = forwardRef<MainEditorRef, MainEditorProps>(({
            if (!doc) return null;
            
            switch (editorType) {
+             case 'onlyoffice':
+               return (
+                 <OnlyOfficeEditor
+                   key={doc.id}
+                   ref={(instance) => {
+                     if (instance) {
+                       onlyOfficeRefs.current.set(doc.id, instance);
+                     }
+                   }}
+                   documentId={doc.id}
+                   documentTitle={doc.title}
+                   onSave={(content) => {
+                     setOpenDocuments(prev =>
+                       prev.map(x => 
+                         x.id === doc.id 
+                           ? { ...x, isDirty: content !== undefined }
+                           : x
+                       )
+                     );
+                   }}
+                   onError={(error) => {
+                     console.error('OnlyOffice error:', error);
+                   }}
+                   height="100%"
+                   width="100%"
+                 />
+               );
+             
              case 'full-google-docs':
                return (
                  <FullGoogleDocsEditor
