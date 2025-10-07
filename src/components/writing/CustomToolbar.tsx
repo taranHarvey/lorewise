@@ -6,7 +6,6 @@ import {
   ItalicIcon,
   UnderlineIcon,
   ListBulletIcon,
-  ListOrderedIcon,
   AlignLeftIcon,
   AlignCenterIcon,
   AlignRightIcon,
@@ -49,7 +48,7 @@ export default function CustomToolbar({ onFormatChange, onInsert, className = ''
 
   const listOptions = [
     { name: 'bulletList', icon: ListBulletIcon, action: () => onFormatChange('list', 'bullet') },
-    { name: 'numberedList', icon: ListOrderedIcon, action: () => onFormatChange('list', 'number') },
+    { name: 'numberedList', icon: ListBulletIcon, action: () => onFormatChange('list', 'number') }, // Using same icon for now
   ];
 
   const insertOptions = [
