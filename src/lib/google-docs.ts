@@ -42,20 +42,22 @@ export async function createGoogleDoc(title: string, content: string, accessToke
       throw new Error('Failed to create document');
     }
 
-    // Insert content into the document
-    await docs.documents.batchUpdate({
-      documentId: documentId,
-      requestBody: {
-        requests: [
-          {
-            insertText: {
-              location: { index: 1 },
-              text: content,
+    // Insert content into the document (only if content exists)
+    if (content && content.trim()) {
+      await docs.documents.batchUpdate({
+        documentId: documentId,
+        requestBody: {
+          requests: [
+            {
+              insertText: {
+                location: { index: 1 },
+                text: content,
+              },
             },
-          },
-        ],
-      },
-    });
+          ],
+        },
+      });
+    }
 
     return {
       documentId,
@@ -77,27 +79,39 @@ export async function updateGoogleDoc(documentId: string, content: string, acces
     const endIndex = document.data.body?.content?.[1]?.endIndex || 1;
     
     // Clear existing content and insert new content
-    await docs.documents.batchUpdate({
-      documentId,
-      requestBody: {
-        requests: [
-          {
-            deleteContentRange: {
-              range: {
-                startIndex: 1,
-                endIndex: endIndex - 1,
-              },
-            },
+    const requests = [];
+    
+    // Always clear existing content
+    if (endIndex > 1) {
+      requests.push({
+        deleteContentRange: {
+          range: {
+            startIndex: 1,
+            endIndex: endIndex - 1,
           },
-          {
-            insertText: {
-              location: { index: 1 },
-              text: content,
-            },
-          },
-        ],
-      },
-    });
+        },
+      });
+    }
+    
+    // Only insert text if content exists
+    if (content && content.trim()) {
+      requests.push({
+        insertText: {
+          location: { index: 1 },
+          text: content,
+        },
+      });
+    }
+    
+    // Only make the API call if we have requests
+    if (requests.length > 0) {
+      await docs.documents.batchUpdate({
+        documentId,
+        requestBody: {
+          requests: requests,
+        },
+      });
+    }
 
     return {
       documentId,
