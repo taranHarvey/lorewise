@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
+import { updateNovel } from '@/lib/database';
 
-interface GoogleDocsEmbedProps {
+interface FullGoogleDocsEditorProps {
   documentId: string;
   documentTitle?: string;
   initialContent?: string;
@@ -11,22 +12,22 @@ interface GoogleDocsEmbedProps {
   onError?: (error: string) => void;
 }
 
-export default function GoogleDocsEmbed({
+export default function FullGoogleDocsEditor({
   documentId,
   documentTitle = 'Novel Document',
   initialContent = '',
   onSave,
   onError,
-}: GoogleDocsEmbedProps) {
+}: FullGoogleDocsEditorProps) {
   const { googleDocsToken } = useAuth();
   const [googleDocId, setGoogleDocId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Initialize Google Doc
   useEffect(() => {
     const initializeDocument = async () => {
       if (!googleDocsToken) {
+        setError('Google Docs access token not available. Please log in with Google.');
         setIsLoading(false);
         return;
       }
@@ -57,12 +58,18 @@ export default function GoogleDocsEmbed({
         const result = await response.json();
         setGoogleDocId(result.documentId);
         
-        console.log('✅ Google Doc created:', result.documentUrl);
+        // Save the googleDocId to Firestore for future reference
+        await updateNovel(documentId, {
+          googleDocId: result.documentId,
+          updatedAt: new Date(),
+        });
+
+        console.log('✅ Google Doc created/linked:', result.documentUrl);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Failed to initialize document';
         setError(errorMessage);
         onError?.(errorMessage);
-        console.error('❌ Google Docs initialization error:', err);
+        console.error('❌ Full Google Docs initialization error:', err);
       } finally {
         setIsLoading(false);
       }
@@ -73,7 +80,7 @@ export default function GoogleDocsEmbed({
 
   if (!googleDocsToken) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <div className="text-blue-500 text-xl mb-4">🔐</div>
           <p className="text-gray-600 mb-4">Please log in with Google to use Google Docs</p>
@@ -85,10 +92,10 @@ export default function GoogleDocsEmbed({
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mx-auto mb-4"></div>
-          <p className="text-gray-600">Creating Google Doc...</p>
+          <p className="text-gray-600">Loading Google Docs editor...</p>
         </div>
       </div>
     );
@@ -96,7 +103,7 @@ export default function GoogleDocsEmbed({
 
   if (error) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center h-full">
         <div className="text-center">
           <div className="text-red-500 text-xl mb-4">⚠️</div>
           <p className="text-red-600 mb-4">{error}</p>
@@ -111,30 +118,19 @@ export default function GoogleDocsEmbed({
     );
   }
 
-  if (!googleDocId) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <div className="text-center">
-          <div className="text-gray-500 text-xl mb-4">📄</div>
-          <p className="text-gray-600">No Google Doc available</p>
-        </div>
+  return (
+    <div className="flex flex-col h-full">
+      {/* Full Google Docs interface with all native tools */}
+      <div className="flex-1">
+        <iframe
+          src={`https://docs.google.com/document/d/${googleDocId}/edit?usp=sharing`}
+          className="w-full h-full border-0"
+          title="Google Docs Editor"
+          allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture; microphone; camera"
+          style={{ minHeight: '600px' }}
+          sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-downloads"
+        />
       </div>
-    );
-  }
-
-         return (
-           <div className="flex flex-col h-full">
-             {/* Embedded Google Docs with full native interface */}
-             <div className="flex-1">
-               <iframe
-                 src={`https://docs.google.com/document/d/${googleDocId}/edit?usp=sharing`}
-                 className="w-full h-full border-0"
-                 title="Google Docs Editor"
-                 allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture; microphone; camera"
-                 style={{ minHeight: '600px' }}
-                 sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-downloads"
-               />
-             </div>
-           </div>
-         );
+    </div>
+  );
 }
