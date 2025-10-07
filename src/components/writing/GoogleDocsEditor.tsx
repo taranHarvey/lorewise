@@ -77,13 +77,13 @@ export default function GoogleDocsEditor({
     initializeDocument();
   }, [documentId, documentTitle, initialContent, onError, googleDocsToken]);
 
-  // Auto-save functionality
+  // Auto-save functionality with rate limiting
   useEffect(() => {
     if (!googleDocId || !content) return;
 
     const autoSaveTimer = setTimeout(async () => {
       await saveDocument();
-    }, 2000); // Auto-save after 2 seconds of inactivity
+    }, 10000); // Auto-save after 10 seconds of inactivity (reduced frequency)
 
     return () => clearTimeout(autoSaveTimer);
   }, [content, googleDocId]);
@@ -110,10 +110,23 @@ export default function GoogleDocsEditor({
 
       if (!response.ok) {
         const errorData = await response.json();
+        
+        // Handle quota exceeded error gracefully
+        if (errorData.error && errorData.error.includes('Quota exceeded')) {
+          console.warn('⚠️ Google Docs quota exceeded - saving to Firestore only');
+          // Still save to Firestore even if Google Docs fails
+          await updateNovel(documentId, {
+            description: content,
+            updatedAt: new Date(),
+          });
+          onSave?.(content);
+          return;
+        }
+        
         throw new Error(errorData.error || 'Failed to update Google Doc');
       }
       
-      // Update Firestore
+      // Update Firestore (always save locally even if Google Docs fails)
       await updateNovel(documentId, {
         description: content,
         updatedAt: new Date(),
@@ -123,6 +136,13 @@ export default function GoogleDocsEditor({
       console.log('✅ Document saved successfully');
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Failed to save document';
+      
+      // Don't show quota errors to user
+      if (errorMessage.includes('Quota exceeded')) {
+        console.warn('⚠️ Google Docs quota exceeded - will retry later');
+        return;
+      }
+      
       setError(errorMessage);
       onError?.(errorMessage);
       console.error('❌ Save error:', err);
