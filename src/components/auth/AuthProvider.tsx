@@ -73,6 +73,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setGoogleDocsToken(credential.accessToken);
       // Store in localStorage for persistence
       localStorage.setItem('googleDocsToken', credential.accessToken);
+      
+      // Also store the refresh token if available
+      if (credential.idToken) {
+        localStorage.setItem('googleRefreshToken', credential.idToken);
+      }
     }
   };
 

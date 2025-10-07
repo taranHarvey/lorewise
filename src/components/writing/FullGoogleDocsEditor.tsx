@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/components/auth/AuthProvider';
 import { updateNovel } from '@/lib/database';
+import GoogleDocsAuthHelper from './GoogleDocsAuthHelper';
 
 interface FullGoogleDocsEditorProps {
   documentId: string;
@@ -52,6 +53,12 @@ export default function FullGoogleDocsEditor({
 
         if (!response.ok) {
           const errorData = await response.json();
+          
+          // If authentication failed, provide helpful error message
+          if (response.status === 401) {
+            throw new Error('Google authentication expired. Please log out and log back in with Google to refresh your access token.');
+          }
+          
           throw new Error(errorData.error || 'Failed to create Google Doc');
         }
 
@@ -80,13 +87,12 @@ export default function FullGoogleDocsEditor({
 
   if (!googleDocsToken) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="text-center">
-          <div className="text-blue-500 text-xl mb-4">🔐</div>
-          <p className="text-gray-600 mb-4">Please log in with Google to use Google Docs</p>
-          <p className="text-sm text-gray-500">Google Docs integration requires Google authentication</p>
-        </div>
-      </div>
+      <GoogleDocsAuthHelper 
+        onAuthSuccess={() => {
+          // Refresh the component after successful auth
+          window.location.reload();
+        }}
+      />
     );
   }
 
@@ -107,12 +113,26 @@ export default function FullGoogleDocsEditor({
         <div className="text-center">
           <div className="text-red-500 text-xl mb-4">⚠️</div>
           <p className="text-red-600 mb-4">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-          >
-            Retry
-          </button>
+          <div className="flex gap-2 justify-center">
+            <button
+              onClick={() => window.location.reload()}
+              className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+            >
+              Retry
+            </button>
+            {error.includes('authentication expired') && (
+              <button
+                onClick={() => {
+                  // Clear the Google Docs token and redirect to login
+                  localStorage.removeItem('googleDocsToken');
+                  window.location.href = '/auth/login';
+                }}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              >
+                Re-authenticate
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );
