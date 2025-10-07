@@ -124,40 +124,17 @@ export default function GoogleDocsEmbed({
 
   return (
     <div className="flex flex-col h-full">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-white">
-        <h2 className="text-lg font-semibold text-gray-800">{documentTitle}</h2>
-        <div className="flex items-center space-x-2">
-          <a
-            href={`https://docs.google.com/document/d/${googleDocId}/edit`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Open in Google Docs
-          </a>
-        </div>
-      </div>
-
-      {/* Embedded Google Docs */}
+      {/* Embedded Google Docs with full toolbar */}
       <div className="flex-1">
         <iframe
           src={`https://docs.google.com/document/d/${googleDocId}/edit?usp=sharing&rm=minimal`}
           className="w-full h-full border-0"
           title="Google Docs Editor"
           allow="clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          style={{ minHeight: '600px' }}
         />
       </div>
 
-      {/* Footer */}
-      <div className="flex items-center justify-between p-2 bg-gray-50 border-t border-gray-200 text-sm text-gray-600">
-        <div>
-          Powered by Google Docs
-        </div>
-        <div>
-          Auto-saves to your Google Drive
-        </div>
-      </div>
     </div>
   );
 }
